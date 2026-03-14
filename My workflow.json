@@ -1,0 +1,944 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1lsuGdAyGlGqEJrysuxIBzli37Wspg7LXwYXAh7tKgVk/edit?gid=232274697#gid=232274697",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "232274697",
+          "mode": "id"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        -32
+      ],
+      "id": "ddf2508b-25ee-48a2-9a7b-ead1a16220e6",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "ZF8xzwET7nYKWt79",
+          "name": "Google Sheets Trigger account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/10wK4aozEkgOZHZs4keNWackOCI6fZz4JMuP5imeTK9E/edit?gid=2125786467#gid=2125786467",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "2125786467",
+          "mode": "id"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "=Availability",
+              "lookupValue": "Available"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -272,
+        -208
+      ],
+      "id": "c3d709be-8e39-4e39-9eff-573bf8c7bfed",
+      "name": "Get row(s) in sheet",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "MDYeUj0Nj8AoRok9",
+          "name": "Google Sheets account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "krishnahari1042@gmail.com",
+        "subject": "=Appointment Confirmation with {{ $json.doctorName }}",
+        "emailType": "text",
+        "message": "=Dear {{ $('Google Sheets Trigger').item.json.Name }} \n\nYour symptoms have been reviewed, and we have successfully matched you with a suitable specialist.\n👨‍⚕️ Appointment Details\nDoctor Assigned:{{ $json.doctorName }} \nSpecialization:{{ $json.specialization }}\nAvailability:{{ $json.timing }}\nDoctor Contact:{{ $json.doctorContact }}\nPlease reach out to the doctor during the available hours listed above to confirm your appointment time.\n\nWishing you a speedy recovery\nTelemedicine Support Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        912,
+        -16
+      ],
+      "id": "f56632e4-0611-4531-bf66-dee168a4c76b",
+      "name": "Send a message",
+      "webhookId": "6a6b4163-c50d-48fc-a2a4-d0bf0c235e33",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "VZYvLwfI93f2oG8u",
+          "name": "Gmail account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "krishnahari1042@gmail.com",
+        "subject": "=New Patient Case Assigned – {{ $('Google Sheets Trigger').item.json.Name }}",
+        "emailType": "text",
+        "message": "=Dear ,{{ $('Edit Fields').item.json.doctorName }}\nYou have been assigned a new patient case through the telemedicine system. Please find the details below:  \nPatient Name: {{ $('Google Sheets Trigger').item.json.Name }} \nAge:{{ $('Google Sheets Trigger').item.json.Age }} \nGender:{{ $('Google Sheets Trigger').item.json.Gender }} \nContact:{{ $('Google Sheets Trigger').item.json.Contact }}  \nSymptoms: {{ $('Google Sheets Trigger').item.json.Symptoms }}\nDuration:{{ $('Google Sheets Trigger').item.json.Duration }} \nAdditional Notes:{{ $('Google Sheets Trigger').item.json.Notes }}  \nPlease review the patient details and confirm the appointment during your available hours.  Best regards, Telemedicine Support Team\nPlease click the link below to open and edit the patient's prescription document: https://docs.google.com/document/d/{{ $json.documentId }}/edit?tab=t.0\nOPEN PRESCRIPTION FORM",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1120,
+        -256
+      ],
+      "id": "f28a9f42-6f79-4e3f-ac41-f40ffa0d82b6",
+      "name": "Send a message1",
+      "webhookId": "8e4dbb77-cfa9-4cd2-9fee-51eb9db5ffd2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "s1zvdpwt3axD6r8H",
+          "name": "Gmail account 7"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "137a23b0-1f02-4557-919c-90297692814b",
+              "leftValue": "={{ $node[\"Google Sheets Trigger\"].json.Symptoms }}",
+              "rightValue": "chest pain, unconscious, severe bleeding, hemorrhage, difficulty breathing",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1936,
+        -288
+      ],
+      "id": "a04e95f7-717e-4feb-8083-3e55ef79e6f4",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "sendTo": "krishnahari1042@gmail.com",
+        "subject": "=Patient Admission Status – {{ $json[\"patient_name\"] }}",
+        "message": "=Dear Admission Department,  Please find below the details of a patient case requiring admission:  Patient Name: {{ $json[\"patient_name\"] }} Age: {{ $json[\"Age\"] }} Gender: {{ $json[\"Gender\"] }} Contact: {{ $json[\"Contact\"] }}  Symptoms: {{ $json[\"Symptoms\"] }} Doctor Assigned: {{ $json[\"doctor_name\"] }} ({{ $json[\"specialization\"] }})  Admission Status:  - Emergency – Immediate attention required .Kindly arrange the necessary admission process based on the above status.  Best regards, Telemedicine Support Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2192,
+        -368
+      ],
+      "id": "c3256d8a-5824-403c-b5a3-4a68d8caa60a",
+      "name": "Send a message2",
+      "webhookId": "7f197738-3f22-4890-bc68-b7f4c45596de",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6cnTAKfOK6D6bv6v",
+          "name": "Gmail account 6"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "krishnahari1042@gmail.com",
+        "subject": "Dear Admission Department,",
+        "message": "=Dear Admission Department,  \nPlease find below the details of a patient case requiring admission: \nPatient Name: {{ $('Google Sheets Trigger').item.json.Name }}\nAge: {{ $('Google Sheets Trigger').item.json.Age }}\nGender: {{ $('Google Sheets Trigger').item.json.Gender }}\nContact: {{ $('Google Sheets Trigger').item.json.Contact }}\nSymptoms: {{ $('Google Sheets Trigger').item.json.Symptoms }} \nDoctor Assigned: {{ $('Edit Fields').item.json.doctorName }} ({{ $('Edit Fields').item.json.specialization }}) \nAdmission Status: - Non-Emergency – Routine admission .\nKindly arrange the necessary admission process based on the above status. \nBest regards, Telemedicine Support Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2208,
+        -208
+      ],
+      "id": "80a9760d-bdf7-435f-abae-8901012ba96c",
+      "name": "Send a message3",
+      "webhookId": "ca453612-d515-46bc-89a9-9c421e65c920",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "s1zvdpwt3axD6r8H",
+          "name": "Gmail account 7"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2432,
+        -144
+      ],
+      "id": "f023336d-e85b-4c9e-a68f-90f432544a34",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "IcwukEnid9XczAny",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Google Sheets Trigger').item.json.Name }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        2544,
+        -144
+      ],
+      "id": "95dbd906-b7ce-4c79-81df-4f05e10586b1",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=**ROLE:**\nYou are a Professional Medical Documentation Specialist. Your task is to generate a comprehensive, formal final consultation report for the patient.\n\n**INPUT DATA:**\n1. FULL PATIENT/DOCTOR JSON:{{ JSON.stringify($json) }} \n2. RAW PRESCRIPTION TEXT (Doctor Input): {{ $('Get a document').item.json.content }}\n\n**TASK:**\nCreate a structured, professional medical report by synthesizing the input data.\n\n**STRICT RULES:**\n- DO NOT use any HTML tags (e.g., <h1>, <p>, <b>). Use simple text formatting (dashes, newlines) only.\n- DO NOT invent a diagnosis or change the medication names/dosages.\n- The final output MUST be plain text suitable for printing.\n\n**REQUIRED OUTPUT FORMAT (Plain Text):**\nGenerate a structured text report using the following format:\n\nCONSULTATION REPORT\n------------------------------------------------\n1. PATIENT DEMOGRAPHICS\nName:\nAge: [Insert Age]\nReported Symptoms: [Insert Symptoms]\n\n2. SPECIALIST CONSULTATION\nConsulting Doctor: [Insert Doctor Name]\nSpecialization: [Insert Specialization]\n\n3. TREATMENT PLAN\nMedication: [Extract Medication and Dosage]\nInstructions: [Extract Instructions/Frequency]\n\n------------------------------------------------\nGenerated by Telemedicine Support System",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        2448,
+        -320
+      ],
+      "id": "7a5bbb65-3a14-4c2e-9476-9696c01cae8e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -416,
+        208
+      ],
+      "id": "7b6060cd-ff69-4ea0-b0ef-e7c372ba2e03",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        224,
+        192
+      ],
+      "id": "c2618b6f-eda8-4707-93ed-26a5cd6dea7c"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        48
+      ],
+      "id": "1c4609a9-9eed-42a7-9d4f-7dff03b7e489",
+      "name": "Wait",
+      "webhookId": "b2cec640-ac62-4c81-8562-2ea71d9c5a2b"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        -64
+      ],
+      "id": "9fcf5cce-3626-4214-9950-772f9d556c36",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=ROLE: You are a medical assignment assistant.\n\n**INPUT DATA:**\nThe current patient record is provided in the input: {{ JSON.stringify($json) }}\n\n**STEP 1: ANALYZE SYMPTOMS**\nRead the patient symptoms and map them to a specialization:\n- Skin rash, itching -> Dermatologist\n- Headache, migraine -> Neurologist\n- Joint pain, swelling -> Orthopedic\n- Fever, cold -> General Physician\n- Chest pain -> Cardiologist\n\n**STEP 2: FIND AVAILABLE DOCTOR**\nCall the 'doctor_lookup' tool.\n- Input for tool: The Specialization you determined in Step 1.\n\n**STEP 3: CONSTRUCT FINAL JSON**\nOutput a single JSON object combining the Patient data and the Matched Doctor data.\n\n**STRICT DATA MAPPING RULES:**\n1. patient_name: Get this from the INPUT DATA field 'Name'.\n2. doctor_name: Get this from the TOOL RESULT field 'Doctor Name'.\n3. specialization: Get this from the TOOL RESULT field 'Specialization'.\n4. availability: Get this from the TOOL RESULT field 'Timing'.\n5. doctor_contact: Get this from the TOOL RESULT field 'Contact'.\n6. If the tool returns \"null\" or \"Error\", set all doctor fields to null.\n\n**REQUIRED OUTPUT FORMAT:**\n{\n  \"patient_name\": \"...\",\n  \"age\": \"...\",\n  \"symptoms\": \"...\",\n  \"doctor_name\": \"...\",\n  \"specialization\": \"...\",\n  \"availability\": \"...\",\n  \"doctor_contact\": \"...\"\n}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        256,
+        -144
+      ],
+      "id": "ece28698-dead-4f4d-90d4-fc76db512f7b",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        224,
+        64
+      ],
+      "id": "c25955cf-5c8f-44a2-a210-4dfe6e570886",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "IcwukEnid9XczAny",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.Name }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        336,
+        64
+      ],
+      "id": "ec04cb58-57f0-42e5-b7e8-4651f3eccae5",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to find a doctor. Input must be the required Specialization (e.g. 'Cardiologist)",
+        "jsCode": "// 1. SAFE INPUT EXTRACTION\n// 1. SMART INPUT EXTRACTION\n// This block handles every way n8n might send the data (String, Object, or Nested)\nlet rawInput;\n\n// Try to grab the variable 'query'\ntry { rawInput = query; } catch (e) {\n    try { rawInput = inputs.query; } catch(e2) {\n        try { rawInput = input.query; } catch(e3) {\n             try { rawInput = $input.first().json.query; } catch(e4) {}\n        }\n    }\n}\n\n// If it's an object (which caused your error), drill down to find the text\nif (typeof rawInput === 'object' && rawInput !== null) {\n    if (rawInput.query) rawInput = rawInput.query;\n    else if (rawInput.specialization) rawInput = rawInput.specialization;\n    // Fallback: If we can't find a property, stringify it so we see the JSON in the error\n    else rawInput = JSON.stringify(rawInput);\n}\n\n// 2. VALIDATION\nif (!rawInput) {\n    return JSON.stringify({ error: \"No input found. Test with JSON: { \\\"query\\\": \\\"Dermatologist\\\" }\" });\n}\n\n// Clean up the search term\nlet targetSpec = String(rawInput);\n// Fix for double-quotes if they appear (e.g. \"\"Dermatologist\"\")\nif (targetSpec.startsWith('\"') && targetSpec.endsWith('\"')) {\n    targetSpec = targetSpec.slice(1, -1);\n}\ntargetSpec = targetSpec.toLowerCase().trim();\n\n\n// 3. GET DOCTOR LIST\nlet allDoctorItems;\ntry {\n    // Ensure this matches your node name\n    allDoctorItems = $('Get row(s) in sheet').all();\n} catch (error) {\n    return JSON.stringify({ error: \"CRITICAL: Could not find node 'Get row(s) in sheet'.\" });\n}\n\n// 4. RUN SEARCH\nconst matchedItem = allDoctorItems.find(item => {\n    const doc = item.json;\n    const spec = doc[\"Specialization\"];\n    const avail = doc[\"Availability\"];\n    \n    // Logic: Match Specialization AND check 'Available'\n    return spec && spec.toLowerCase().trim() === targetSpec && \n           avail && avail.toLowerCase().includes(\"available\");\n});\n\n// 5. RETURN RESULT\nif (matchedItem) {\n    return JSON.stringify(matchedItem.json);\n} else {\n    // Debug info\n    const availableSpecs = allDoctorItems.map(i => `${i.json[\"Specialization\"]} (${i.json[\"Availability\"]})`).slice(0, 10).join(\", \");\n    return JSON.stringify({\n        status: \"NO MATCH\",\n        you_asked_for: targetSpec,\n        sheet_contains_preview: availableSpecs\n    });\n}",
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"query\": {\n      \"type\": \"string\",\n      \"description\": \"The medical specialization to search for (e.g. Cardiologist).\"\n    }\n  },\n  \"required\": [\n    \"query\"\n  ]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        64
+      ],
+      "id": "221feb23-c843-4136-aa06-70a01fe93a98",
+      "name": "Doctor Lookup Tool"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3fde5da7-9110-4b8a-aafb-dcd101b96edd",
+              "name": "doctorName",
+              "value": "={{ JSON.parse($json.output.match(/\\{[\\s\\S]*\\}/)[0]).doctor_name }}",
+              "type": "string"
+            },
+            {
+              "id": "27aea2c1-5ba7-4153-b139-f9a55e55c124",
+              "name": "specialization",
+              "value": "={{ JSON.parse($json.output.match(/\\{[\\s\\S]*\\}/)[0]).specialization }}",
+              "type": "string"
+            },
+            {
+              "id": "31cd5cc1-102d-4400-b1ad-c238b5a260eb",
+              "name": "timing",
+              "value": "={{ JSON.parse($json.output.match(/\\{[\\s\\S]*\\}/)[0]).availability }}",
+              "type": "string"
+            },
+            {
+              "id": "33036b58-bb54-4086-8a60-5b72a04e60ba",
+              "name": "doctorContact",
+              "value": "={{ JSON.parse($json.output.match(/\\{[\\s\\S]*\\}/)[0]).doctor_contact }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        592,
+        -16
+      ],
+      "id": "cec2aade-92fc-48a9-a8ba-a26b76b3d963",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "folderId": "=1d7CZhTbZK317dGzZbvzowb4TWr5vIS6m",
+        "title": "=Prescription for Mr.{{ $('Google Sheets Trigger').item.json.Name }} with {{ $json.doctorName }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        752,
+        -144
+      ],
+      "id": "7660e064-5a52-4dd9-a9fb-2cdbdb145c66",
+      "name": "Create a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "YjvPimgn6mC96KgB",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "krishnahari1042@gmail.com",
+        "subject": "✅ Your Final Consultation Report is Ready - [Patient Name]",
+        "emailType": "text",
+        "message": "=Dear {{ $('Google Sheets Trigger').item.json.Name }}, \nWe are pleased to inform you that your case has been fully reviewed and assessed by Dr. {{ $('Edit Fields').item.json.doctorName }}. \n--- FINAL CONSULTATION REPORT --- \nYour personalized treatment plan and final consultation report are now available. Please use the secure link below to view or download the document. \nREPORT LINK:  https://docs.google.com/document/d/{{ $json.documentId }}/edit?tab=t.0\n--- IMPORTANT HEALTH ADVICE ---  \nPlease follow Dr. {{ $('Edit Fields').item.json.doctorName }}'s instructions carefully. We advise you to prioritize rest and hydration over the next few days.   We wish you a swift and complete recovery.  Thank you for using the Telemedicine Support System.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2976,
+        -320
+      ],
+      "id": "6ac784fb-a7cb-42a1-846f-62a764a8e8ae",
+      "name": "Send a message4",
+      "webhookId": "91459eab-2c35-43b0-8a0a-a0e2902e9f4d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "s1zvdpwt3axD6r8H",
+          "name": "Gmail account 7"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "=TELEMEDICINE PRESCRIPTION ------------------------------------------------ Date: {{ $today.format('2025-MM-DD') }} Patient: {{ $('Google Sheets Trigger').item.json.Name }} Age: {{ $('Google Sheets Trigger').item.json.Age }} Doctor: {{ $('Edit Fields').item.json.doctorName }} Specialization: {{ $('Edit Fields').item.json.specialization }}  --- RX (PRESCRIPTION) \n[[RX_STATUS_PENDING]]  \nSignature,\n"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        928,
+        -208
+      ],
+      "id": "e961bca1-4f15-44a0-8eb8-9d64de7e36ec",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "YjvPimgn6mC96KgB",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1328,
+        -256
+      ],
+      "id": "2f4285c7-db49-44a7-98f5-b02c792a1604",
+      "name": "Wait1",
+      "webhookId": "5bcb56b0-f9e5-43e2-b7fd-3ff78179b5bb"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $('Update a document').item.json.documentId }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        -256
+      ],
+      "id": "84d7d812-9dcb-49a2-8d2f-bdd948e8c862",
+      "name": "Get a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "YjvPimgn6mC96KgB",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "77ec70d5-e746-456a-9967-624882eff35f",
+              "leftValue": "={{ $json.content }}",
+              "rightValue": "[[RX_STATUS_PENDING]]",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1728,
+        -256
+      ],
+      "id": "9c80d41e-8e90-4149-a94c-608794b663ae",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $('Create a document').item.json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "=TELEMEDICINE PRESCRIPTION ------------------------------------------------ Date: {{ $today.format('2025-MM-DD') }} Patient: {{ $('Google Sheets Trigger').item.json.Name }} Age: {{ $('Google Sheets Trigger').item.json.Age }} Doctor: {{ $('Edit Fields').item.json.doctorName }} Specialization: {{ $('Edit Fields').item.json.specialization }}  --- RX (PRESCRIPTION)  [[RX_STATUS_PENDING]]   Signature,",
+              "replaceText": "={{ $json.output }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        2784,
+        -320
+      ],
+      "id": "aa5e6820-a73a-4efe-a411-e64524e43939",
+      "name": "Update a document1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "YjvPimgn6mC96KgB",
+          "name": "Google Docs account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Get row(s) in sheet": [
+      {
+        "json": {
+          "row_number": 2,
+          "Doctor Name": "Dr. Ramesh Kumar",
+          "Specialization": "Cardiologist",
+          "Availability": "Available",
+          "Timing": "10:00 AM - 4:00 PM",
+          "Contact": 9876500012,
+          "Email ID": "ramesh.kumar@medcare.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 3,
+          "Doctor Name": "Dr. Priya Shankar",
+          "Specialization": "General Physician",
+          "Availability": "Available",
+          "Timing": "9:00 AM - 5:00 PM",
+          "Contact": 9876500013,
+          "Email ID": "priya.shankar@medcare.com"
+        }
+      },
+      {
+        "json": {
+          "row_number": 7,
+          "Doctor Name": "Dr. John Paul",
+          "Specialization": "Pulmonologist",
+          "Availability": "Available",
+          "Timing": "12:00 PM - 6:00 PM",
+          "Contact": 9876500017,
+          "Email ID": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 9,
+          "Doctor Name": "Dr. Manoj Varma",
+          "Specialization": "Endocrinologist",
+          "Availability": "Available",
+          "Timing": "3:00 PM - 9:00 PM",
+          "Contact": 9876500019,
+          "Email ID": ""
+        }
+      },
+      {
+        "json": {
+          "row_number": 11,
+          "Doctor Name": "Dr. Arun Prasad",
+          "Specialization": "Emergency Specialist",
+          "Availability": "Available",
+          "Timing": "24 Hours",
+          "Contact": 9876500021,
+          "Email ID": ""
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message3": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Doctor Lookup Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a document": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Update a document1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a document": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Get a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a document1": {
+      "main": [
+        [
+          {
+            "node": "Send a message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "31563687-ed52-4a7a-b291-cad853ef0e1b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1e7666ff50ea74d024f0e85d6782a70d8a7ccb2e50e2b3ebac5b1a1cb4dcca11"
+  },
+  "id": "229lTBGDTAFXuEW2",
+  "tags": []
+}
