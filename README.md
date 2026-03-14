@@ -155,7 +155,7 @@ Doctors and staff receive **automated updates via Gmail**.
 
 # 📷 Workflow Automation Interface
 
-![Telemedicine Automation Workflow](https://raw.githubusercontent.com/Hari-23-cpu/YOUR-REPOSITORY-NAME/main/images/telemedicine-workflow.png)
+![Telemedicine Automation Workflow](https://github.com/Hari-23-cpu/TeleMedicene-Automation-using-n8n/blob/main/Screenshot%202025-12-23%20201158.png)
 
 **Figure:** AI-driven telemedicine workflow showing data ingestion from Google Sheets, AI agent processing, document generation, and automated email notifications.
 
@@ -188,6 +188,6 @@ This system can be applied in:
 
 # 📂 Project Repository
 
-https://github.com/Hari-23-cpu/Telemedicine-AI-Automation
+https://github.com/Hari-23-cpu/TeleMedicene-Automation-using-n8n
 
 
